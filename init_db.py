@@ -1,52 +1,76 @@
-import sqlite3
-from pathlib import Path
-
-DB_PATH = Path("db/finance.db")
-
-schema = """
-PRAGMA foreign_keys = ON;
-
-CREATE TABLE IF NOT EXISTS users (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  email TEXT NOT NULL UNIQUE,
-  password_hash TEXT NOT NULL,
-  name TEXT,
-  created_at TEXT DEFAULT (datetime('now'))
-);
-
-CREATE TABLE IF NOT EXISTS categories (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  user_id INTEGER NOT NULL,
-  name TEXT NOT NULL,
-  created_at TEXT DEFAULT (datetime('now')),
-  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-  UNIQUE(user_id, name)
-);
-
-CREATE TABLE IF NOT EXISTS transactions (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  user_id INTEGER NOT NULL,
-  amount_minor INTEGER NOT NULL,
-  txn_type TEXT NOT NULL,     -- expense/income
-  txn_date TEXT NOT NULL,     -- ISO date/time
-  description TEXT,
-  category_id INTEGER,
-  category_source TEXT NOT NULL DEFAULT 'none', -- none/manual/ml
-  created_at TEXT DEFAULT (datetime('now')),
-  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-  FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE SET NULL
-);
-
-CREATE INDEX IF NOT EXISTS idx_tx_user_date ON transactions(user_id, txn_date);
-CREATE INDEX IF NOT EXISTS idx_tx_user_cat ON transactions(user_id, category_id);
+"""
+Initialize database and load sample data
 """
 
-def main():
-    DB_PATH.parent.mkdir(parents=True, exist_ok=True)
-    conn = sqlite3.connect(DB_PATH)
-    conn.executescript(schema)
-    conn.close()
-    print("✅ Created DB at:", DB_PATH.resolve())
+from models import db, Transaction
+from data.sample_data import SAMPLE_TRANSACTIONS
+from datetime import datetime, timedelta
+import random
 
-if __name__ == "__main__":
-    main()
+def init_database():
+    """Initialize database and populate with sample data"""
+    
+    print("🔄 Initializing database...")
+    db.init_db()
+    
+    print("📝 Loading sample transaction data...")
+    session = db.get_session()
+    
+    try:
+        # Generate transactions for the last 90 days
+        base_date = datetime.now()
+        
+        for i, trans_data in enumerate(SAMPLE_TRANSACTIONS):
+            # Distribute transactions across last 90 days
+            days_ago = random.randint(0, 90)
+            transaction_date = base_date - timedelta(days=days_ago)
+            
+            transaction = Transaction(
+                amount=trans_data['amount'],
+                category=trans_data['category'],
+                description=trans_data['description'],
+                merchant=trans_data['merchant'],
+                transaction_type='expense',
+                date=transaction_date
+            )
+            session.add(transaction)
+        
+        session.commit()
+        print(f"✓ Successfully loaded {len(SAMPLE_TRANSACTIONS)} sample transactions!")
+        
+        # Display some stats
+        all_trans = session.query(Transaction).all()
+        total_spent = sum(t.amount for t in all_trans)
+        categories = set(t.category for t in all_trans)
+        
+        print(f"\n📊 Database Statistics:")
+        print(f"   • Total Transactions: {len(all_trans)}")
+        print(f"   • Total Spending: ${total_spent:.2f}")
+        print(f"   • Categories: {', '.join(sorted(categories))}")
+        
+    except Exception as e:
+        session.rollback()
+        print(f"❌ Error loading data: {e}")
+    finally:
+        session.close()
+
+
+def view_transactions():
+    """View all transactions"""
+    session = db.get_session()
+    try:
+        transactions = session.query(Transaction).all()
+        print(f"\n📋 All Transactions ({len(transactions)} total):")
+        print("-" * 80)
+        for t in transactions[:10]:  # Show first 10
+            print(f"{t.date.strftime('%Y-%m-%d')} | {t.merchant:15} | ${t.amount:8.2f} | {t.category}")
+        if len(transactions) > 10:
+            print(f"... and {len(transactions) - 10} more transactions")
+        print("-" * 80)
+    finally:
+        session.close()
+
+
+if __name__ == '__main__':
+    init_database()
+    view_transactions()

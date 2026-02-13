@@ -1,17 +1,30 @@
-# sibathon_2026
+# SIBATHON Project
 
-Personal Finance Copilot — What It Means
+## Team Introduction
 
-Personal Finance Copilot is an intelligent money assistant that helps users track expenses, set budgets, and get personalized insights — all in plain language. Instead of manually logging numbers, users can ask questions like a chat, see spending patterns, and get proactive suggestions to save and plan for their goals.
+This project is developed by a talented team of developers:
 
-Just like a copilot helps a pilot, this app helps users navigate their financial life by:
-Tracking spending
-Suggesting smart decisions
-Forecasting budget trends
-Answering finance questions
+- **Abdul Qudoos** - Developer
+- **Inamullah** - Developer  
+- **Sara Katpar** - Developer
 
+## About
 
+SIBATHON is a collaborative project developed during the hackathon event. Our team combines diverse skills and perspectives to build innovative solutions.
 
+## Getting Started
 
+To get started with this project, clone the repository and follow the setup instructions.
 
+```bash
+git clone <your-repo-url>
+cd SIBATHON
+```
 
+## Contributing
+
+We welcome contributions from all team members. Please feel free to submit pull requests and report issues.
+
+---
+
+Built with ❤️ by Abdul Qudoos, Inamullah, and Sara Katpar
