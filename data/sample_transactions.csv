@@ -1,0 +1,21 @@
+amount,description,merchant,category,transaction_type,transaction_date,payment_method,notes
+45.50,Coffee and breakfast,Starbucks,Food & Dining,expense,2026-02-10,Credit Card,Morning coffee
+120.00,Uber ride to office,Uber,Transportation,expense,2026-02-10,Credit Card,Commute to work
+55.00,Lunch at restaurant,Chipotle,Food & Dining,expense,2026-02-10,Cash,Team lunch
+89.99,Monthly internet bill,Comcast,Utilities,expense,2026-02-09,Bank Transfer,Internet subscription
+150.00,Movie tickets,AMC Theaters,Entertainment,expense,2026-02-08,Credit Card,Weekend movie
+200.00,Grocery shopping,Whole Foods,Groceries,expense,2026-02-07,Credit Card,Weekly groceries
+65.00,Gas station,Shell,Transportation,expense,2026-02-06,Credit Card,Fuel
+32.50,Netflix subscription,Netflix,Entertainment,expense,2026-02-05,Credit Card,Monthly subscription
+25.00,Gym membership,Planet Fitness,Fitness,expense,2026-02-01,Bank Transfer,Monthly membership
+5000.00,Monthly salary,Company,Salary,income,2026-02-01,Bank Transfer,Paycheck
+78.90,Pharmacy purchase,CVS Pharmacy,Healthcare,expense,2026-02-04,Credit Card,Vitamins and medicines
+150.00,Restaurant dinner,The Olive Garden,Food & Dining,expense,2026-02-03,Credit Card,Date night
+299.99,New shoes,Nike Store,Shopping,expense,2026-02-02,Credit Card,Sneakers
+45.00,Water bill,City Water,Utilities,expense,2026-01-30,Bank Transfer,Monthly water bill
+120.00,Doctor appointment,City Hospital,Healthcare,expense,2026-01-28,Credit Card,Annual checkup
+85.50,Bookstore,Barnes & Noble,Education,expense,2026-01-27,Credit Card,Programming books
+200.00,Flight ticket,United Airlines,Travel,expense,2026-01-25,Credit Card,Weekend trip
+34.99,Phone bill,AT&T,Utilities,expense,2026-01-20,Bank Transfer,Mobile plan
+95.00,Car insurance,Geico,Insurance,expense,2026-01-15,Bank Transfer,Monthly insurance
+25.00,Coffee,Local Cafe,Food & Dining,expense,2026-02-12,Cash,Coffee with friends
