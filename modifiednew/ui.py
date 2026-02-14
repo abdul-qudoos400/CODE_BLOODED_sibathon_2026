@@ -554,10 +554,45 @@ class GraphsPage(tk.Frame):
         sizes = list(data.values())
 
         fig = Figure(figsize=(3.2, 3.2), dpi=110)
-        ax = fig.add_subplot(111)
-        ax.pie(sizes, labels=labels, autopct="%1.1f%%")
-        ax.set_title("Spending by Category")
+        fig.patch.set_facecolor(COLORS["card"])
+        ax = fig.add_subplot(111, facecolor=COLORS["card"])
 
+        # Light / pastel colors inside the pie (uses Matplotlib's Pastel1)
+        cmap = matplotlib.cm.get_cmap("Pastel1")
+        colors = [cmap(i / max(1, len(labels))) for i in range(len(labels))]
+
+        # Draw pie with labels outside and percentage inside; center the pie and make it circular
+        wedges, texts, autotexts = ax.pie(
+            sizes,
+            labels=labels,
+            colors=colors,
+            startangle=90,
+            autopct="%1.1f%%",
+            pctdistance=0.65,
+            labeldistance=1.05,
+            textprops={"color": COLORS["text"], "fontsize": 10, "fontfamily": FONTS["body"][0]},
+            wedgeprops={"edgecolor": COLORS["bg"], "linewidth": 0.6},
+        )
+
+        # Make percentage text slightly smaller and readable on pastel wedges
+        for t in autotexts:
+            t.set_color(COLORS["bg"])  # dark text over light wedges
+            t.set_fontsize(9)
+            t.set_fontfamily(FONTS["body"][0])
+
+        # Ensure circle and centered placement
+        ax.axis("equal")
+        ax.set_position([0.08, 0.12, 0.84, 0.78])
+
+        # Title styling using app fonts
+        ax.set_title(
+            "Spending by Category",
+            color=COLORS["text"],
+            fontfamily=FONTS["h2"][0],
+            fontsize=FONTS["h2"][1],
+        )
+
+        fig.tight_layout()
         canvas = FigureCanvasTkAgg(fig, master=tab)
         canvas.draw()
         canvas.get_tk_widget().pack(fill="both", expand=True)
@@ -573,13 +608,27 @@ class GraphsPage(tk.Frame):
         vals = list(data.values())
 
         fig = Figure(figsize=(3.2, 3.2), dpi=110)
-        ax = fig.add_subplot(111)
-        ax.bar(keys, vals)
-        ax.set_title(title)
-        ax.set_xlabel(xlabel)
-        ax.set_ylabel("Amount")
-        ax.tick_params(axis="x", rotation=35)
+        fig.patch.set_facecolor(COLORS["card"])
+        ax = fig.add_subplot(111, facecolor=COLORS["card"])
 
+        # Bar styling
+        bar_color = COLORS["accent"]
+        bars = ax.bar(keys, vals, color=bar_color)
+
+        ax.set_title(title, color=COLORS["text"])
+        ax.set_xlabel(xlabel, color=COLORS["muted"])
+        ax.set_ylabel("Amount", color=COLORS["muted"])
+
+        ax.tick_params(axis="x", rotation=35, colors=COLORS["muted"])
+        ax.tick_params(axis="y", colors=COLORS["muted"])
+
+        # Spines and grid
+        for spine in ax.spines.values():
+            spine.set_color(COLORS["border"])
+        ax.yaxis.grid(True, color=COLORS["border"], linewidth=0.6)
+        ax.set_axisbelow(True)
+
+        fig.tight_layout()
         canvas = FigureCanvasTkAgg(fig, master=tab)
         canvas.draw()
         canvas.get_tk_widget().pack(fill="both", expand=True)
