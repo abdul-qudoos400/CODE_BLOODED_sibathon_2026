@@ -284,8 +284,6 @@ class DashboardPage(tk.Frame):
     def __init__(self, parent, app: App):
         super().__init__(parent, bg=COLORS["bg"])
         self.app = app
-        self._showing_spendings = False
-        self._spendings_cached = None
 
         top = tk.Frame(self, bg=COLORS["bg"])
         top.pack(fill="x", padx=18, pady=(16, 8))
@@ -306,38 +304,8 @@ class DashboardPage(tk.Frame):
             hover_bg="#F3F4F6"
         ).pack(side="right")
 
-        wrap = tk.Frame(self, bg=COLORS["bg"])
-        wrap.pack(pady=20)
-
-        self.balance_canvas = tk.Canvas(wrap, width=290, height=310, bg=COLORS["bg"], highlightthickness=0)
-        self.balance_canvas.pack()
-
-        self.balance_canvas.create_oval(45, 245, 245, 305, fill="#E6F4FF", outline="#E6F4FF")
-        self.balance_canvas.create_oval(60, 255, 230, 300, fill="#D6EEFF", outline="#D6EEFF")
-        self.balance_canvas.create_oval(75, 262, 215, 295, fill="#C7E8FF", outline="#C7E8FF")
-
-        self.balance_canvas.create_oval(18, 18, 272, 272, fill="#EEF7FF", outline="#EEF7FF")
-        self.balance_canvas.create_oval(34, 34, 256, 256, fill="#DFF1FF", outline="#DFF1FF")
-        self.balance_canvas.create_oval(50, 50, 240, 240, fill="#AEEBFF", outline="#AEEBFF")
-        self.balance_canvas.create_oval(66, 66, 224, 224, fill=COLORS["card"], outline=COLORS["card"])
-
-        self.center_title_id = self.balance_canvas.create_text(
-            145, 128, text="Spendings", fill=COLORS["text"], font=("Segoe UI", 16, "bold")
-        )
-        self.center_value_id = self.balance_canvas.create_text(
-            145, 158, text="", fill="#12A6FF", font=("Segoe UI", 14, "bold")
-        )
-        self.center_hint_id = self.balance_canvas.create_text(
-            145, 185, text="(tap to view)", fill=COLORS["muted"], font=("Segoe UI", 10)
-        )
-
-        self.balance_canvas.configure(cursor="hand2")
-        self.balance_canvas.bind("<Button-1>", lambda e: self.toggle_spendings())
-
         section = tk.Frame(self, bg=COLORS["bg"])
-        section.pack(fill="x", padx=18, pady=(12, 10))
-
-        tk.Label(section, text="Spendings", bg=COLORS["bg"], fg=COLORS["text"], font=FONTS["h3"]).pack(anchor="w", pady=(0, 10))
+        section.pack(fill="x", padx=18, pady=(20, 10))
 
         row = tk.Frame(section, bg=COLORS["bg"])
         row.pack(fill="x")
@@ -360,36 +328,10 @@ class DashboardPage(tk.Frame):
     def on_show(self):
         user = self.app.current_user or "USER"
         self.lbl_name.config(text=user.upper())
-        self._showing_spendings = False
-        self._spendings_cached = None
-        self.balance_canvas.itemconfigure(self.center_title_id, text="Spendings")
-        self.balance_canvas.itemconfigure(self.center_value_id, text="")
-        self.balance_canvas.itemconfigure(self.center_hint_id, text="(tap to view)")
 
     def logout(self):
         self.app.current_user = None
         self.app.show_frame("LoginPage")
-
-    def toggle_spendings(self):
-        if not self.app.current_user:
-            return
-
-        if self._showing_spendings:
-            self._showing_spendings = False
-            self.balance_canvas.itemconfigure(self.center_title_id, text="Spendings")
-            self.balance_canvas.itemconfigure(self.center_value_id, text="")
-            self.balance_canvas.itemconfigure(self.center_hint_id, text="(tap to view)")
-            return
-
-        if self._spendings_cached is None:
-            rows = get_transactions(self.app.current_user)
-            total = sum(float(r[1]) for r in rows)
-            self._spendings_cached = total
-
-        self._showing_spendings = True
-        self.balance_canvas.itemconfigure(self.center_title_id, text="Total Spendings")
-        self.balance_canvas.itemconfigure(self.center_value_id, text=f"Rs. {self._spendings_cached:,.0f}")
-        self.balance_canvas.itemconfigure(self.center_hint_id, text="(tap to hide)")
 
 
 class AddTxnPage(tk.Frame):
